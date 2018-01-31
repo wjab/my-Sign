@@ -39,6 +39,7 @@ namespace FirmaSimple
         private string _policyUri;
         private string _mimeType;
         private string _signatureValueId;
+        private string id;
 
         #region Constants
         public const string SHA1Uri = "http://www.w3.org/2000/09/xmldsig#sha1";
@@ -53,6 +54,7 @@ namespace FirmaSimple
         #region Constructors
         public FirmaXades()
         {
+            id = Guid.NewGuid().ToString("N");
             this.SignMethod = SignMethod.RSAwithSHA256;
             this.RefsDigestMethod = DigestMethod.SHA256;
 
@@ -179,17 +181,28 @@ namespace FirmaSimple
             reference.DigestMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
             reference.Id = "r-id-1";
             reference.Uri = "";
+            reference.Type = "";
 
-            for (int i = 0; i < _document.DocumentElement.Attributes.Count; i++)
-            {
-                if (_document.DocumentElement.Attributes[i].Name.Equals("id", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    reference.Uri = "#" + _document.DocumentElement.Attributes[i].Value;
-                    break;
-                }
-            }
+            //for (int i = 0; i < _document.DocumentElement.Attributes.Count; i++)
+            //{
+            //    if (_document.DocumentElement.Attributes[i].Name.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+            //    {
+            //        reference.Uri = "#" + _document.DocumentElement.Attributes[i].Value;
+            //        break;
+            //    }
+            //}
 
             XmlDsigEnvelopedSignatureTransform xmlDsigEnvelopedSignatureTransform = new XmlDsigEnvelopedSignatureTransform();
+            //xmlDsigEnvelopedSignatureTransform.Algorithm = "http://www.w3.org/TR/1999/REC-xpath-19991116";
+
+            //XmlDocument doc = new XmlDocument();
+            //XmlElement xpathElem = doc.CreateElement("XPath");
+            //xpathElem.InnerText = "not(ancestor-or-self::ds:Signature)";
+            //XmlDsigXPathTransform xform = new XmlDsigXPathTransform();
+            //xform.LoadInnerXml(xpathElem.SelectNodes("."));
+
+            //reference.AddTransform(xform);
+
             reference.AddTransform(xmlDsigEnvelopedSignatureTransform);
 
             _objectReference = reference.Id;
@@ -253,18 +266,18 @@ namespace FirmaSimple
             _xadesSignedXml.SigningKey = _rsaKey;
 
             KeyInfo keyInfo = new KeyInfo();
-            keyInfo.Id = "KeyInfoId-" + _signatureId;
+            //keyInfo.Id = "KeyInfoId-" + _signatureId;
             keyInfo.AddClause(new KeyInfoX509Data((X509Certificate)_signCertificate));
-            keyInfo.AddClause(new RSAKeyValue((RSA)_rsaKey));
+            //keyInfo.AddClause(new RSAKeyValue((RSA)_rsaKey));
 
             _xadesSignedXml.KeyInfo = keyInfo;
 
-            Reference reference = new Reference();
+            /*Reference reference = new Reference();
 
-            reference.Id = "ReferenceKeyInfo";
+            reference.Id = "";// "ReferenceKeyInfo";
             reference.Uri = "#KeyInfoId-" + _signatureId;
 
-            _xadesSignedXml.AddReference(reference);
+            _xadesSignedXml.AddReference(reference);*/
         }
 
         private void SetCryptoServiceProvider()
@@ -313,8 +326,8 @@ namespace FirmaSimple
             XadesObject xadesObject = new XadesObject();
             //xadesObject.Id = "XadesObjectId-" + Guid.NewGuid().ToString();
             //xadesObject.QualifyingProperties.Id = "QualifyingProperties-" + Guid.NewGuid().ToString();
-            xadesObject.QualifyingProperties.Target = "#id" + _signatureId;
-            xadesObject.QualifyingProperties.SignedProperties.Id = "SignedProperties-" + _signatureId;
+            xadesObject.QualifyingProperties.Target = "#id" + id; // _signatureId
+            xadesObject.QualifyingProperties.SignedProperties.Id = "xades-id-" + id; //SignedProperties-   // _signatureId
 
             AddSignatureProperties(
                 xadesObject.QualifyingProperties.SignedProperties.SignedSignatureProperties,
@@ -334,7 +347,7 @@ namespace FirmaSimple
             cert = new Cert();
             cert.IssuerSerial.X509IssuerName = certificado.IssuerName.Name;
             cert.IssuerSerial.X509SerialNumber = HexToDecimal(certificado.SerialNumber);
-            SetCertDigest(_signCertificate.GetRawCertData(), _refsMethodUri, cert.CertDigest);
+            SetCertDigest(_signCertificate.GetRawCertData(), _refsMethodUri, cert.CertDigest); 
             signedSignatureProperties.SigningCertificate.CertCollection.Add(cert);
 
             if (!string.IsNullOrEmpty(_policyId))
@@ -346,7 +359,7 @@ namespace FirmaSimple
             if (!string.IsNullOrEmpty(_policyUri))
             {
                 SigPolicyQualifier spq = new SigPolicyQualifier();
-                spq.AnyXmlElement = _document.CreateElement("SPURI", XadesSignedXml.XadesNamespaceUri);
+                spq.AnyXmlElement = _document.CreateElement("Identifier"); // "SPURI", XadesSignedXml.XadesNamespaceUri
                 spq.AnyXmlElement.InnerText = _policyUri;
 
                 signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyQualifiers.SigPolicyQualifierCollection.Add(spq);
@@ -354,11 +367,11 @@ namespace FirmaSimple
 
             if (!string.IsNullOrEmpty(_policyHash))
             {
-                signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyHash.DigestMethod.Algorithm = SignedXml.XmlDsigSHA1Url;
+                signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyHash.DigestMethod.Algorithm = "http://www.w3.org/2001/04/xmlenc#sha256";
                 signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyHash.DigestValue = Convert.FromBase64String(PolicyHash);
             }
 
-            signedSignatureProperties.SigningTime = DateTime.Now;
+            signedSignatureProperties.SigningTime = Convert.ToDateTime( DateTime.Now.ToString("yyyy-MM-ddTHH\\:mm\\:ssZ"));
 
             if (!string.IsNullOrEmpty(mimeType))
             {
@@ -429,7 +442,7 @@ namespace FirmaSimple
         /// </summary>
         private void SetSignatureId()
         {
-            string id = Guid.NewGuid().ToString("N");
+            //string id = Guid.NewGuid().ToString("N");
 
             _signatureId = "Id-" + id;
             _signatureValueId = "value-id" + id;
@@ -444,7 +457,7 @@ namespace FirmaSimple
             }
             catch (Exception exception)
             {
-                throw new Exception("Ha ocurrido durante el proceso de firmado: " + exception.Message);
+               throw new Exception("Ha ocurrido durante el proceso de firmado: " + exception.Message);
             }
         }
 

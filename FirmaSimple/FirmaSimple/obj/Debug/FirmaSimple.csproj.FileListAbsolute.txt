@@ -11,3 +11,15 @@ c:\users\walterargüello\documents\visual studio 2017\Projects\FirmaSimple\Firma
 c:\users\walterargüello\documents\visual studio 2017\Projects\FirmaSimple\FirmaSimple\bin\Debug\Microsoft.Xades.pdb
 c:\users\walterargüello\documents\visual studio 2017\Projects\FirmaSimple\FirmaSimple\bin\Debug\Security.Cryptography.pdb
 c:\users\walterargüello\documents\visual studio 2017\Projects\FirmaSimple\FirmaSimple\bin\Debug\Security.Cryptography.xml
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\FirmaSimple.exe.config
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\FirmaSimple.exe
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\FirmaSimple.pdb
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\BouncyCastle.Crypto.dll
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\System.Security.Cryptography.Primitives.dll
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\System.Security.Cryptography.Xml.dll
+C:\github\my-Sign\FirmaSimple\FirmaSimple\obj\Debug\FirmaSimple.exe
+C:\github\my-Sign\FirmaSimple\FirmaSimple\obj\Debug\FirmaSimple.pdb
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\Microsoft.Xades.dll
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\Security.Cryptography.dll
+C:\github\my-Sign\FirmaSimple\FirmaSimple\bin\Debug\Microsoft.Xades.pdb
+C:\github\my-Sign\FirmaSimple\FirmaSimple\obj\Debug\FirmaSimple.csprojResolveAssemblyReference.cache
