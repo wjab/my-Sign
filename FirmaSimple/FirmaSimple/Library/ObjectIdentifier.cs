@@ -211,9 +211,12 @@ namespace Microsoft.Xades
 				throw new CryptographicException("Identifier element missing in OjectIdentifier");
 			}
 
-            bufferXmlElement = creationXmlDocument.CreateElement("Description", XadesSignedXml.XadesNamespaceUri);
-            bufferXmlElement.InnerText = this.description;
-            retVal.AppendChild(bufferXmlElement);
+            if (!string.IsNullOrEmpty(this.description))
+            {
+                bufferXmlElement = creationXmlDocument.CreateElement("Description", XadesSignedXml.XadesNamespaceUri);
+                bufferXmlElement.InnerText = this.description;
+                retVal.AppendChild(bufferXmlElement);
+            }
 
 			if (this.documentationReferences != null && this.documentationReferences.HasChanged())
 			{

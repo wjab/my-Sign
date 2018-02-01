@@ -162,8 +162,6 @@ namespace FirmaSimple
         public void SetContentEnveloped(XmlDocument document)
         {
             _document = new XmlDocument();
-            //_document.PreserveWhitespace = true;
-            //_document.Load(fileName);
             _document = document;
 
             CreateEnvelopedDocument();
@@ -180,8 +178,9 @@ namespace FirmaSimple
 
             reference.DigestMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
             reference.Id = "r-id-1";
-            reference.Uri = "";
             reference.Type = "";
+            reference.Uri = "";
+            
 
             //for (int i = 0; i < _document.DocumentElement.Attributes.Count; i++)
             //{
@@ -192,18 +191,28 @@ namespace FirmaSimple
             //    }
             //}
 
-            XmlDsigEnvelopedSignatureTransform xmlDsigEnvelopedSignatureTransform = new XmlDsigEnvelopedSignatureTransform();
+            // ** XmlDsigEnvelopedSignatureTransform xmlDsigEnvelopedSignatureTransform = new XmlDsigEnvelopedSignatureTransform();
             //xmlDsigEnvelopedSignatureTransform.Algorithm = "http://www.w3.org/TR/1999/REC-xpath-19991116";
 
-            //XmlDocument doc = new XmlDocument();
-            //XmlElement xpathElem = doc.CreateElement("XPath");
-            //xpathElem.InnerText = "not(ancestor-or-self::ds:Signature)";
-            //XmlDsigXPathTransform xform = new XmlDsigXPathTransform();
-            //xform.LoadInnerXml(xpathElem.SelectNodes("."));
+            
 
-            //reference.AddTransform(xform);
 
-            reference.AddTransform(xmlDsigEnvelopedSignatureTransform);
+
+            XmlDocument doc = new XmlDocument();
+            XmlElement xpathElem = doc.CreateElement("XPath");
+            xpathElem.InnerText = "not(ancestor-or-self::*)";
+            XmlDsigXPathTransform xform = new XmlDsigXPathTransform();
+            xform.LoadInnerXml(xpathElem.SelectNodes("."));
+            xform.Algorithm = "http://www.w3.org/TR/1999/REC-xpath-19991116";
+            //xform.PropagatedNamespaces.Add("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
+
+            reference.AddTransform(xform);
+
+            XmlDsigExcC14NTransform transform = new XmlDsigExcC14NTransform();
+            reference.AddTransform(transform);
+
+
+            //reference.AddTransform(xmlDsigEnvelopedSignatureTransform);
 
             _objectReference = reference.Id;
 
@@ -217,6 +226,8 @@ namespace FirmaSimple
         /// <param name="signMethod"></param>
         public void Sign(X509Certificate2 certificate, SignMethod? signMethod = null)
         {
+            _mimeType = "application/octet-stream";
+
             if (certificate == null)
             {
                 throw new Exception("Es necesario un certificado válido para la firma.");
@@ -354,7 +365,6 @@ namespace FirmaSimple
             {
                 signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyImplied = false;
                 signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyId.Identifier.IdentifierUri = _policyId;
-                //signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyId.Identifier.di
             }
 
             if (!string.IsNullOrEmpty(_policyUri))
@@ -372,7 +382,7 @@ namespace FirmaSimple
                 signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyHash.DigestValue = Convert.FromBase64String(PolicyHash);
             }
 
-            signedSignatureProperties.SigningTime = Convert.ToDateTime( DateTime.Now.ToString("yyyy-MM-ddTHH\\:mm\\:ssZ"));
+            signedSignatureProperties.SigningTime = DateTime.Now;
 
             if (!string.IsNullOrEmpty(mimeType))
             {
@@ -390,7 +400,7 @@ namespace FirmaSimple
         {
             using (var hashAlg = GetHashAlg(digestAlgorithm))
             {
-                destination.DigestMethod.Algorithm = digestAlgorithm;
+                destination.DigestMethod.Algorithm = "http://www.w3.org/2000/09/xmldsig#sha1"; //digestAlgorithm;
                 destination.DigestValue = hashAlg.ComputeHash(rawCert);
             }
         }

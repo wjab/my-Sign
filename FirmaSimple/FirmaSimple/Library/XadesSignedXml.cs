@@ -573,6 +573,10 @@ namespace Microsoft.Xades
                 signedPropertiesIdBuffer = xadesObject.QualifyingProperties.SignedProperties.Id;
                 reference.Uri = "#" + signedPropertiesIdBuffer;
                 reference.Type = SignedPropertiesType;
+
+                XmlDsigExcC14NTransform transform = new XmlDsigExcC14NTransform();
+                reference.AddTransform(transform);
+
                 this.AddReference(reference); //Add the XAdES object reference
 
                 this.cachedXadesObjectDocument = new XmlDocument();
@@ -1694,7 +1698,14 @@ namespace Microsoft.Xades
 
                 CanonicalXmlNodeList_Add.Invoke(refList, new object[] { xmlDoc.DocumentElement });
 
-                Reference_UpdateHashValue.Invoke(reference2, new object[] { xmlDoc, refList });
+                try
+                {
+                    Reference_UpdateHashValue.Invoke(reference2, new object[] { xmlDoc, refList });
+                }
+                catch(Exception ex)
+                {
+                    ex.Message.ToString();
+                }
 
                 if (reference2.Id != null)
                 {
@@ -1792,6 +1803,7 @@ namespace Microsoft.Xades
                 //
 
                 //Transform canonicalizationMethodObject = this.SignedInfo.CanonicalizationMethodObject;
+                this.SignedInfo.CanonicalizationMethodObject.Algorithm = "http://www.w3.org/2001/10/xml-exc-c14n#";
                 System.Security.Cryptography.Xml.Transform canonicalizationMethodObject = this.SignedInfo.CanonicalizationMethodObject;
                 //
 

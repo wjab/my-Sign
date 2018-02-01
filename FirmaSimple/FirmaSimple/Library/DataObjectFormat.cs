@@ -198,11 +198,11 @@ namespace Microsoft.Xades
 			xmlNamespaceManager = new XmlNamespaceManager(xmlElement.OwnerDocument.NameTable);
 			xmlNamespaceManager.AddNamespace("xsd", XadesSignedXml.XadesNamespaceUri);
 
-			xmlNodeList = xmlElement.SelectNodes("xsd:Description", xmlNamespaceManager);
-			if (xmlNodeList.Count != 0)
-			{
-				this.description = xmlNodeList.Item(0).InnerText;
-			}
+			//xmlNodeList = xmlElement.SelectNodes("xsd:Description", xmlNamespaceManager);
+			//if (xmlNodeList.Count != 0)
+			//{
+			//	this.description = xmlNodeList.Item(0).InnerText;
+			//}
 
 			xmlNodeList = xmlElement.SelectNodes("xsd:ObjectIdentifier", xmlNamespaceManager);
 			if (xmlNodeList.Count != 0)
