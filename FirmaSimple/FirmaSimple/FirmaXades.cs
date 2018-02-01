@@ -200,7 +200,7 @@ namespace FirmaSimple
 
             XmlDocument doc = new XmlDocument();
             XmlElement xpathElem = doc.CreateElement("XPath");
-            xpathElem.InnerText = "not(ancestor-or-self::*)";
+            xpathElem.InnerText = "not(ancestor-or-self::ds:Signature)";
             XmlDsigXPathTransform xform = new XmlDsigXPathTransform();
             xform.LoadInnerXml(xpathElem.SelectNodes("."));
             xform.Algorithm = "http://www.w3.org/TR/1999/REC-xpath-19991116";
