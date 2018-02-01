@@ -35,3 +35,4 @@ C:\github\my-Sign\FirmaSimple\FirmaSimple\Library\bin\Debug\Microsoft.Xades.pdb
 C:\github\my-Sign\FirmaSimple\FirmaSimple\Library\bin\Debug\XAdES.xml
 C:\github\my-Sign\FirmaSimple\FirmaSimple\Library\obj\Debug\Microsoft.Xades.dll
 C:\github\my-Sign\FirmaSimple\FirmaSimple\Library\obj\Debug\Microsoft.Xades.pdb
+C:\github\my-Sign\FirmaSimple\FirmaSimple\Library\obj\Debug\Microsoft.Xades.csprojResolveAssemblyReference.cache

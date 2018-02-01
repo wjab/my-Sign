@@ -354,6 +354,7 @@ namespace FirmaSimple
             {
                 signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyImplied = false;
                 signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyId.Identifier.IdentifierUri = _policyId;
+                //signedSignatureProperties.SignaturePolicyIdentifier.SignaturePolicyId.SigPolicyId.Identifier.di
             }
 
             if (!string.IsNullOrEmpty(_policyUri))
